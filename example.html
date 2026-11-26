@@ -1,0 +1,327 @@
+<!doctype html><html lang="en-GB"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"></head><body>
+<title>The yes not yes</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* The yes not yes · template v0.5 · by Paul Roebuck (paulroebuck.co.uk) · MIT licence, see LICENSE.
+   Phone first, one column at reading width. Each card runs top to bottom:
+   what this is about, the one question, Yes / Not yes / Explain this more, then "if not yes, then?"
+   with up to two alternatives (each with its own Yes / Not yes), and a box for your own words
+   that is always open, on a Yes as well. */
+:root{
+  --bg:#faf7f0; --card:#fffdf8; --chip:#f1ead9; --ink:#1a1a1a; --soft:#5d5748; --gold:#7a5f18; --on-gold:#ffffff;
+  --rule:#d9d2c2; --field:#9a9282;
+  --serif:Georgia,'Palatino Linotype',Palatino,serif;
+  --sans:-apple-system,BlinkMacSystemFont,'Helvetica Neue',Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#14161c; --card:#191c24; --chip:#1d212b; --ink:#e8e2d4; --soft:#a39d8f; --gold:#c9a227; --on-gold:#14161c;
+  --rule:#2a2e38; --field:#6a666f; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#14161c; --card:#191c24; --chip:#1d212b; --ink:#e8e2d4; --soft:#a39d8f; --gold:#c9a227; --on-gold:#14161c;
+  --rule:#2a2e38; --field:#6a666f; color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--serif);font-size:17px;line-height:1.55;-webkit-text-size-adjust:100%}
+button,textarea{font:inherit;color:inherit}
+button{cursor:pointer;background:none;border:0;padding:0;text-align:inherit}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+h1,h2,h3{font-weight:400;margin:0;text-wrap:balance}
+p{margin:0}
+.kicker{font-family:var(--sans);font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+.meta{font-family:var(--sans);font-size:.82rem;color:var(--soft);line-height:1.4}
+.lab{font-family:var(--sans);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--soft)}
+
+.top{border-bottom:1px solid var(--rule)}
+.top-in,.wrap{max-width:40rem;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.top-in{padding-block:.6rem;display:flex;align-items:center;gap:.6rem;flex-wrap:wrap}
+.brand{font-size:1.15rem;margin-right:auto;min-width:0}
+.strap{display:block;font-family:var(--sans);font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--soft);line-height:1.3}
+.status{font-family:var(--sans);font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;border:1px solid var(--gold);color:var(--gold);border-radius:2rem;padding:.2rem .6rem;white-space:nowrap}
+.themebtn{font-family:var(--sans);border:1px solid var(--field);border-radius:2rem;min-width:44px;min-height:44px;text-align:center;background:var(--card)}
+.statusnote{flex-basis:100%;font-family:var(--sans);font-size:.78rem;color:var(--soft)}
+
+.wrap{padding-block:1.1rem 3rem;display:flex;flex-direction:column;gap:1rem}
+.title{font-size:1.5rem;line-height:1.2}
+.lede{color:var(--soft);font-size:1rem}
+.box{border:1px solid var(--rule);border-radius:10px;background:var(--card);padding:.9rem 1rem;display:flex;flex-direction:column;gap:.6rem}
+.box h2{font-family:var(--sans);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+.big{font-size:2rem;line-height:1.1;font-variant-numeric:tabular-nums}
+.prog{height:.8rem;background:var(--chip);border-radius:2rem;overflow:hidden}
+.prog i{display:block;height:100%;background:var(--gold)}
+.empty{font-family:var(--sans);font-size:.88rem;color:var(--soft);border:1px dashed var(--field);border-radius:8px;padding:.7rem .8rem}
+
+.rule{border:1px solid var(--rule);border-radius:10px;background:var(--card);padding:.9rem 1rem;display:flex;flex-direction:column;gap:.65rem;min-width:0}
+.rule .head{display:flex;justify-content:space-between;gap:.6rem;align-items:baseline;flex-wrap:wrap}
+.rule .out{font-family:var(--sans);font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;border:1px solid var(--gold);color:var(--gold);border-radius:2rem;padding:.12rem .55rem;white-space:nowrap}
+.rule .out.open{border-style:dashed;border-color:var(--field);color:var(--soft)}
+.rule .q{font-size:1.14rem;line-height:1.35}
+.about{display:flex;flex-direction:column;gap:.5rem;font-size:1rem;overflow-wrap:anywhere}
+.about ul{margin:0;padding-left:1.1rem;display:flex;flex-direction:column;gap:.25rem}
+.yn{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.5rem}
+.yn.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+.below{margin-top:1.5rem;display:flex;flex-direction:column;gap:.4rem}
+.belowline{display:flex;align-items:center;gap:.6rem;font-family:var(--sans);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--soft)}
+.belowline::before,.belowline::after{content:"";flex:1;border-top:1px solid var(--rule)}
+.below .ruled{color:var(--soft)}
+.ruled li,.about,.q,.meta{overflow-wrap:anywhere}
+.yn.three button{font-size:.92rem;line-height:1.2}
+.yn button{min-height:50px;border:1px solid var(--field);border-radius:2rem;background:var(--bg);text-align:center;font-family:var(--sans);font-size:1rem;padding:.3rem .6rem}
+.yn button[aria-pressed="true"]{background:var(--gold);color:var(--on-gold);border-color:var(--gold)}
+.alt{border-left:3px solid var(--gold);padding-left:.8rem;display:flex;flex-direction:column;gap:.55rem}
+textarea.note{width:100%;min-height:5.5rem;border:1px solid var(--field);border-radius:8px;background:var(--bg);padding:.5rem .7rem;font-family:var(--serif);font-size:1rem;line-height:1.45;resize:vertical}
+.btn{font-family:var(--sans);font-size:.92rem;min-height:46px;padding:.4rem 1.1rem;border-radius:2rem;background:var(--gold);color:var(--on-gold);text-align:center;align-self:flex-start}
+textarea.export{width:100%;min-height:11rem;font-family:var(--mono);font-size:.76rem;border:1px solid var(--field);border-radius:8px;background:var(--bg);padding:.5rem}
+details.sec{border:1px solid var(--rule);border-radius:10px;background:var(--card)}
+details.sec>summary{padding:.75rem .9rem;min-height:48px;cursor:pointer;font-size:1.08rem;list-style-position:inside}
+.ruled{margin:0;padding:0 .9rem .6rem;list-style:none;display:flex;flex-direction:column}
+.ruled li{padding:.55rem 0;border-bottom:1px solid var(--rule);display:flex;flex-direction:column;gap:.1rem}
+.ruled li:last-child{border-bottom:0}
+.foot{font-family:var(--mono);font-size:.82rem;color:var(--gold);padding-top:.5rem}
+.own{border:1px solid var(--rule);border-left:3px solid var(--gold);border-radius:10px;background:var(--card);padding:.9rem 1rem;display:flex;flex-direction:column;gap:.6rem}
+.own h2{font-family:var(--sans);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+.own ol{margin:0;padding-left:1.3rem;display:flex;flex-direction:column;gap:.35rem}
+.words{white-space:pre-wrap;font-family:var(--mono);font-size:.76rem;line-height:1.5;background:var(--bg);border:1px solid var(--rule);border-radius:8px;padding:.6rem .7rem;max-height:16rem;overflow:auto;overflow-wrap:anywhere}
+.btn.quiet{background:var(--card);color:var(--ink);border:1px solid var(--field)}
+.row{display:flex;flex-wrap:wrap;gap:.5rem}
+.err{font-family:var(--sans);font-size:.86rem;color:var(--ink);border:1px dashed var(--gold);border-radius:8px;padding:.5rem .7rem}
+@media (prefers-reduced-motion:no-preference){.yn button,.themebtn{transition:background-color .15s,border-color .15s}}
+</style>
+
+<header class="top">
+  <div class="top-in">
+    <div class="brand"><span id="brand"></span><span class="strap" id="strap"></span></div>
+    <span class="status" id="status" hidden></span>
+    <button class="themebtn" id="themebtn" type="button" aria-label="Switch between light and dark">☼</button>
+    <div class="statusnote" id="savestate" role="status"></div>
+  </div>
+</header>
+<main class="wrap" id="app"></main>
+
+<script id="cfg" type="application/json">{"mode": "copy", "title": "The yes not yes", "strap": "An example to try", "status": "Prototype", "asker": "your AI", "text": {"heading": "Three made-up decisions", "lede": "This is an example. The three decisions are made up, about a garden shed. Tap Yes or Not yes. Not yes asks “if not yes, then?” and offers another way, with its own Yes and Not yes. Every card has a box for your own words, and a Yes can carry a condition. At the end, press Copy my answers to see the text you would paste into a chat with your AI. To use it on your own decisions, give your AI the words in the box below.", "signature": "— paulroebuck.co.uk · a prototype, seeking pilots"}, "questions": [{"id": "shed-colour", "t": "The colour", "about": ["A made-up example. Imagine a garden shed that needs painting before winter.", "It is bare timber now. A tin of green paint is already in the garage, so green costs nothing and can start tomorrow."], "q": "Do you want the shed painted green?", "yes": "It gets painted green with the tin in the garage.", "alt": "Leave it as bare timber and oil it instead.", "alt2": "Paint it, but a colour you choose from three sample pots first."}, {"id": "shed-window", "t": "The window", "about": ["A made-up example. The shed has no window, so it is dark inside.", "A window can go in one of two walls:", ["The south wall. More light, and it faces the house.", "The east wall. Morning light only, and it faces the fence."], "Cutting the opening is the same work either way."], "q": "Do you want a window added on the south wall?", "yes": "A window goes in the south wall.", "alt": "Put the window in the east wall, facing the fence.", "alt2": "No window. A skylight in the roof instead."}, {"id": "shed-shelves", "t": "The shelves", "about": ["A made-up example. There is room for shelves along the back wall.", "Three shelves would hold the paint tins and the seed trays. They would take about a hand's width off the floor space."], "q": "Do you want three shelves on the back wall?", "yes": "Three shelves go up on the back wall.", "alt": "No shelves. Hooks on the back wall instead, so the floor stays clear.", "alt2": "One shelf only, high up."}], "paste": true, "home": "paulroebuck.co.uk/instruments/yes-not-yes"}</script>
+<script>
+(function(){
+"use strict";
+/* ---------- the page is built from one small list (see README.md) ----------
+   C.mode       "saved"  = taps save to the owner's Claude account (Artifact db, collection "rulings"); the device is the fallback
+                "copy"   = nothing is stored anywhere; the person taps, presses Copy, and pastes the text into the chat
+   C.questions  [{id, t, about:[paragraph | [bullet, bullet]], q, yes, alt, alt2}]   alt = first alternative, alt2 = second
+   A stored answer is {a, b, c, say, at}: a = the question, b = the first alternative, c = the second; each "yes", "no" or null.
+   C.ruled      [{t, a, did}]  what is already ruled and what was done about it 
+   C.paste      true = (copy mode only) show the words for the person's own AI and a box to paste its cards back; C.home = the page's address, said in the words */
+const C = JSON.parse(document.getElementById('cfg').textContent);
+const $ = (s, r) => (r || document).querySelector(s);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const COPY = C.mode === 'copy';
+let Q = Array.isArray(C.questions) ? C.questions : [];
+let OWN = false;   // true once the person has pasted their own cards
+const RULED = Array.isArray(C.ruled) ? C.ruled : [];
+const ASKER = C.asker || 'your AI';
+const LS = 'yes-not-yes:' + (C.key || 'page');
+const T = Object.assign({
+  heading: 'Yours to rule',
+  lede: 'Each card says what it is about first, then asks one question. Tap Yes, Not yes, or Explain this more. Not yes asks “if not yes, then?” and offers another way, with its own Yes and Not yes. Explain this more brings the card back with more context. Every card has a box for your own words, and a Yes can carry a condition.',
+  then: 'If not yes, then?',
+  then2: 'If not that, then?',
+  say: COPY ? 'Anything to add, in your own words?' : 'In your own words: what are you driving at, or what else do you need?',
+  why: COPY ? 'Why not yes? Say it in your own words.' : 'In your own words: what are you driving at, or what else do you need?',
+  cond: 'Yes, on a condition? Type the condition here.',
+  explainWhat: 'What do you want explained? A word or two is enough.',
+  explained: (COPY ? 'Noted. It comes back explained more fully.' : 'Noted. I come back with this explained more fully, on a new card. Nothing changes meanwhile.'),
+  open: 'Left open. Nothing changes until you say. Tell me in the box what you are driving at.',
+  placeholder: COPY ? 'Type here.' : 'Type here. It saves as you type.',
+  ruledTitle: 'Below the line: already answered',
+  signature: '— ' + ASKER
+}, C.text || {});
+const S = {rules:{}, db:null, saved: COPY ? 'none' : 'checking'};
+
+/* ---------- saving. Copy mode never touches a store, not even the device's. ---------- */
+function loadLocal(){ if (COPY) return; try { const j = JSON.parse(localStorage.getItem(LS) || '{}'); if (j && typeof j === 'object') S.rules = j; } catch(e){} }
+function saveLocal(){ if (COPY) return; try { localStorage.setItem(LS, JSON.stringify(S.rules)); } catch(e){} }
+const SAVELINE = {
+  none: 'Nothing on this page is saved or sent. When you are done, press Copy my answers and paste them into the chat.',
+  checking: 'Looking for your Claude account.',
+  account: 'Your taps and your words save to your Claude account, where ' + ASKER + ' reads them.',
+  device: 'Your taps are kept on this device only, so ' + ASKER + ' cannot see them from here. Press Copy my answers and paste them into the chat.',
+  failed: 'Could not reach your Claude account. Your taps are kept on this device. Press Copy my answers and paste them into the chat.'
+};
+function setSaveState(){ $('#savestate').textContent = SAVELINE[S.saved]; const o = $('#overline'); if (o) o.textContent = SAVELINE[S.saved]; }
+let writeChain = Promise.resolve();
+function putRule(id){
+  const r = S.rules[id]; saveLocal();
+  if (S.db) writeChain = writeChain.then(() => S.db.doc('rulings/' + id).set(r)).catch(() => { S.saved = 'failed'; setSaveState(); });
+}
+const within = (p, ms) => Promise.race([p, new Promise((_, no) => setTimeout(() => no(new Error('timeout')), ms))]);
+async function connect(){
+  if (COPY) return;
+  let db = null;
+  try { db = window.claude && window.claude.use ? await window.claude.use('db') : null; } catch(e){ db = null; }
+  if (!db) { S.saved = 'device'; setSaveState(); return; }
+  try {
+    const snap = await within(db.collection('rulings').get(), 10000), merged = {};
+    snap.docs.forEach(d => { const v = d.data() || {}; merged[d.id] = {a: v.a || null, b: v.b === 'notyet' ? 'no' : v.b || null, c: v.c || null, say: typeof v.say === 'string' ? v.say : '', at: v.at || ''}; });
+    // the newer of the two wins; anything newer on this device goes up to the account
+    for (const id of Object.keys(S.rules)) { const l = S.rules[id], r = merged[id];
+      if (!r || String(l.at || '') > String(r.at || '')) { merged[id] = l; db.doc('rulings/' + id).set(l).catch(() => {}); } }
+    S.rules = merged; S.db = db; S.saved = 'account'; saveLocal(); renderAll();
+  } catch(e){ S.saved = 'failed'; setSaveState(); }
+}
+
+/* ---------- the cards ---------- */
+const said = r => !!(r && r.say && r.say.trim());
+// where a card stands: '' waiting · yes · alt1 · alt2 · open (not yes to everything offered) · more (a Not yes still waiting on its next tap)
+function state(x, r){ r = r || {}; const b = r.b === 'notyet' ? 'no' : r.b;
+  if (r.a === 'yes') return 'yes'; if (r.a === 'explain') return 'explain'; if (r.a !== 'no') return '';
+  if (b === 'yes') return 'alt1'; if (b !== 'no') return 'more';
+  if (!x.alt2) return 'open'; return r.c === 'yes' ? 'alt2' : r.c === 'no' ? 'open' : 'more'; }
+const done = (x, r) => { const s = state(x, r); return !!s && s !== 'more'; };
+const count = () => Q.filter(x => done(x, S.rules[x.id])).length;
+function outLabel(x, r){ const s = state(x, r); return s === 'yes' ? (said(r) ? 'Yes · with a condition' : 'Yes') : s === 'alt1' ? 'The first alternative' : s === 'alt2' ? 'The second alternative' : s === 'explain' ? 'Explain this more' : s === 'open' ? 'Not yes · left open' : s === 'more' ? 'Not yes · one more tap' : 'Waiting on you'; }
+function cardHTML(x, i){
+  const r = S.rules[x.id] || {}, id = esc(x.id), st = state(x, r), b = r.b === 'notyet' ? 'no' : r.b;
+  const yn = (lvl, val, label) => '<div class="yn' + (lvl === 'a' ? ' three' : '') + '" role="group" aria-label="' + label + '"><button type="button" data-rule="' + id + '" data-ans="' + lvl + ':yes" aria-pressed="' + (val === 'yes') + '">Yes</button><button type="button" data-rule="' + id + '" data-ans="' + lvl + ':no" aria-pressed="' + (val === 'no') + '">Not yes</button>' +
+    (lvl === 'a' ? '<button type="button" data-rule="' + id + '" data-ans="a:explain" aria-pressed="' + (val === 'explain') + '">Explain this more</button>' : '') + '</div>';
+  const about = (Array.isArray(x.about) ? x.about : [x.about]).map(a => Array.isArray(a) ? '<ul>' + a.map(b => '<li>' + esc(b) + '</li>').join('') + '</ul>' : '<p>' + esc(a) + '</p>').join('');
+  return '<div class="head"><span class="kicker">' + (i + 1) + ' of ' + Q.length + ' · ' + esc(x.t) + '</span><span class="out' + (done(x, r) ? '' : ' open') + '">' + outLabel(x, r) + '</span></div>' +
+    '<div class="about"><span class="lab">What this is about</span>' + about + '</div>' +
+    '<span class="lab">The question</span><p class="q">' + esc(x.q) + '</p><p class="meta">Yes means: ' + esc(x.yes) + '</p>' +
+    yn('a', r.a, 'Your answer') +
+    (r.a === 'no' ? '<div class="alt"><p class="lab">' + esc(T.then) + '</p><p class="q">' + esc(x.alt) + '</p>' + yn('b', b, 'Your answer to the first alternative') +
+      (b === 'no' && x.alt2 ? '<div class="alt"><p class="lab">' + esc(T.then2) + '</p><p class="q">' + esc(x.alt2) + '</p>' + yn('c', r.c, 'Your answer to the second alternative') + '</div>' : '') +
+      (st === 'open' ? '<p class="meta">' + esc(T.open) + '</p>' : '') + '</div>' : '') +
+    (st === 'explain' ? '<p class="meta">' + esc(T.explained) + '</p>' : '') +
+    '<label class="lab" for="say-' + id + '">' + esc(st === 'yes' ? T.cond : st === 'explain' ? T.explainWhat : r.a === 'no' ? T.why : T.say) + '</label>' +
+    '<textarea class="note" id="say-' + id + '" data-say="' + id + '" placeholder="' + esc(T.placeholder) + '">' + esc(r.say || '') + '</textarea>';
+}
+function counterHTML(){ const n = count(), N = Q.length; return '<h2>Answered</h2><p class="big">' + n + ' of ' + N + '</p><div class="prog" role="img" aria-label="' + n + ' of ' + N + ' answered"><i style="width:' + (N ? n / N * 100 : 0) + '%"></i></div>'; }
+function renderAll(){
+  const pasted = $('#pastebox') ? $('#pastebox').value : '';
+  const act = document.activeElement, keep = act && act.dataset && act.dataset.say ? {id: act.id, a: act.selectionStart, b: act.selectionEnd} : null;
+  $('#app').innerHTML =
+    '<div><h1 class="title">' + esc(OWN ? 'Your cards' : T.heading) + '</h1><p class="lede">' + esc(OWN ? 'Tap Yes, Not yes, or Explain this more on each. Not yes asks “if not yes, then?” and offers another way. Every card has a box for your own words. Then press Copy my answers and paste them back to your AI.' : T.lede) + '</p></div>' +
+    ownHTML() +
+    (Q.length ? '<div class="box" id="counter">' + counterHTML() + '</div>' + Q.map((x, i) => '<section class="rule" id="card-' + esc(x.id) + '">' + cardHTML(x, i) + '</section>').join('') +
+      '<div class="box"><h2>Over to ' + esc(ASKER) + '</h2><p class="meta" id="overline"></p><button type="button" class="btn" id="copybtn">Copy my answers</button><div id="copyout"></div></div>'
+      : '<p class="empty">Nothing is waiting on you.</p>') +
+    (RULED.length ? '<div class="below"><p class="belowline"><span>' + esc(T.ruledTitle) + ' · ' + RULED.length + '</span></p><ul class="ruled">' + RULED.slice().reverse().map(x => '<li><span class="lab">' + esc(x.t) + ' · ' + esc(x.a || 'yes') + '</span><span>' + esc(x.did) + '</span></li>').join('') + '</ul></div>' : '') +
+    '<p class="foot">' + esc(T.signature) + '</p>';
+  if (pasted && $('#pastebox')) $('#pastebox').value = pasted;
+  setSaveState();
+  if (keep) { const el = document.getElementById(keep.id); if (el) { el.focus(); try { el.setSelectionRange(keep.a, keep.b); } catch(e){} } }
+}
+function renderCard(id){
+  const i = Q.findIndex(x => x.id === id), el = document.getElementById('card-' + id);
+  if (i < 0 || !el) return; el.innerHTML = cardHTML(Q[i], i); $('#counter').innerHTML = counterHTML();
+}
+function tap(id, ans){
+  const prev = S.rules[id] || {}, [lvl, val] = ans.split(':');
+  // a tap further up clears what hangs below it, unless it repeats the answer already there
+  const r = Object.assign({}, prev, lvl === 'a' ? {a: val, b: val === 'no' && prev.a === 'no' ? prev.b || null : null, c: val === 'no' && prev.a === 'no' ? prev.c || null : null}
+    : lvl === 'b' ? {a: 'no', b: val, c: val === 'no' && prev.b === 'no' ? prev.c || null : null} : {a: 'no', b: 'no', c: val});
+  r.at = new Date().toISOString(); S.rules[id] = r; putRule(id); renderCard(id);
+  const btn = document.querySelector('#card-' + CSS.escape(id) + ' [data-ans="' + ans + '"]'); if (btn) btn.focus({preventScroll:true});
+}
+
+/* ---------- your own cards: the words for your AI, and a box to paste back what it wrote (C.paste, copy mode only) ---------- */
+const PASTE = COPY && !!C.paste;
+const WORDS = C.words || ['Help me settle my open decisions with the yes not yes.',
+  '',
+  '1. If you do not already know them, ask me which decisions are open.',
+  '2. Write one card for each, seven at most, as a JSON list in one code block, and nothing else:',
+  '[{"id": "a1", "t": "a title of three or four words", "about": ["what this is about, in plain words, from what I have told you", "a second short paragraph if it helps"], "q": "one question, asked the positive way round: Do you want …?", "yes": "exactly what happens if I tap Yes", "alt": "your best guess at what I want instead", "alt2": "a second, different alternative"}]',
+  '   Context on every card, before the question. Use what I told you, not your own view, and do not steer.',
+  '3. I will paste it into ' + (C.home || 'the yes not yes page') + ', tap my answers, and paste them back to you.',
+  '4. Read my answers like this. YES: settled. YES, ON A CONDITION: only with the condition under it. NOT YES. Instead: settled that way. Left open: leave it alone. NOT YES with no tap on an alternative: I have not chosen, so ask me what I am driving at. EXPLAIN THIS MORE: give me that card again with more context. My own words outrank my taps. Never ask again what a tap has settled. If you reword a question, give it a new id.'].join('\n');
+function ownHTML(){
+  if (!PASTE) return '';
+  return '<section class="own" aria-labelledby="own-h"><h2 id="own-h">Use it with your own AI</h2>' +
+    '<ol><li>Copy the words below and give them to your own AI.</li><li>It writes your cards. Copy what it writes.</li><li>Paste it in the box and press Show my cards.</li></ol>' +
+    '<div class="words" id="words" tabindex="0" aria-label="The words to give your AI">' + esc(WORDS) + '</div>' +
+    '<div class="row"><button type="button" class="btn" id="copywords">Copy the words for my AI</button></div><p class="meta" id="wordsmsg" role="status"></p>' +
+    '<label class="lab" for="pastebox">Paste what your AI wrote</label>' +
+    '<textarea class="note" id="pastebox" placeholder="Paste here. Nothing is saved or sent."></textarea>' +
+    '<div class="row"><button type="button" class="btn" id="showmine">Show my cards</button>' + (OWN ? '<button type="button" class="btn quiet" id="backtoexample">Back to the example</button>' : '') + '</div>' +
+    '<div id="pastemsg" role="status"></div></section>';
+}
+const str = v => typeof v === 'string' ? v.trim() : '';
+function readCards(text){
+  // take the JSON list out of whatever the AI wrote around it (a code fence, a sentence before it)
+  const t = String(text || '').trim();
+  const tryParse = s => { try { return JSON.parse(s); } catch(e){ return undefined; } };
+  let data = tryParse(t);
+  if (data === undefined) { const a = t.indexOf('['), b = t.lastIndexOf(']'); if (a >= 0 && b > a) data = tryParse(t.slice(a, b + 1)); }
+  if (data === undefined) { const a = t.indexOf('{'), b = t.lastIndexOf('}'); if (a >= 0 && b > a) data = tryParse(t.slice(a, b + 1)); }
+  if (data && !Array.isArray(data) && Array.isArray(data.questions)) data = data.questions;
+  if (!Array.isArray(data) || !data.length) return {err: 'I could not find a list of cards in that. Ask your AI to give just the JSON list, in one code block, and paste it again.'};
+  const seen = new Set(), out = [];
+  for (let i = 0; i < Math.min(data.length, 12); i++) {
+    const x = data[i] || {};
+    let id = str(x.id).replace(/[^A-Za-z0-9_-]/g, '') || ('c' + (i + 1));
+    while (seen.has(id)) id += 'x'; seen.add(id);
+    let about = Array.isArray(x.about) ? x.about : [x.about];
+    about = about.map(a => Array.isArray(a) ? a.map(str).filter(Boolean) : str(a)).filter(a => Array.isArray(a) ? a.length : a);
+    const card = {id, t: str(x.t) || str(x.title) || ('Card ' + (i + 1)), about, q: str(x.q) || str(x.question), yes: str(x.yes), alt: str(x.alt), alt2: str(x.alt2)};
+    if (!card.about.length) return {err: 'Card ' + (i + 1) + ' has nothing under “what this is about”. Every card needs its context before the question. Ask your AI to add it.'};
+    if (!card.q || !card.yes || !card.alt) return {err: 'Card ' + (i + 1) + ' is missing its question, what Yes means, or its alternative. Ask your AI to fill them in.'};
+    if (!card.alt2) delete card.alt2;
+    out.push(card);
+  }
+  return {cards: out, more: data.length > 12};
+}
+function showMine(){
+  const r = readCards($('#pastebox').value), msg = $('#pastemsg');
+  if (r.err) { msg.innerHTML = '<p class="err">' + esc(r.err) + '</p>'; return; }
+  Q = r.cards; OWN = true; S.rules = {};
+  renderAll();
+  const m = $('#pastemsg'); if (m) m.innerHTML = '<p class="meta">Your ' + Q.length + ' card' + (Q.length === 1 ? '' : 's') + ' are below.' + (r.more ? ' Only the first 12 are shown.' : '') + ' Nothing has been saved or sent.</p>';
+  const first = document.querySelector('.rule'); if (first) first.scrollIntoView({behavior: 'smooth', block: 'start'});
+}
+function copyWords(){
+  const msg = $('#wordsmsg');
+  (navigator.clipboard && navigator.clipboard.writeText ? navigator.clipboard.writeText(WORDS) : Promise.reject()).then(() => { msg.textContent = 'Copied. Paste them into a chat with your AI.'; })
+    .catch(() => { msg.textContent = 'Press and hold in the box above, choose Select all, then Copy.'; const w = $('#words'); const rg = document.createRange(); rg.selectNodeContents(w); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(rg); });
+}
+
+/* ---------- the text that goes back to the chat ---------- */
+function answersText(){
+  const stamp = new Date().toLocaleString('en-GB', {day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'});
+  return 'MY ANSWERS · ' + (OWN ? 'The yes not yes (my own cards)' : (C.title || 'The yes not yes')) + ' · ' + stamp + ' · ' + count() + ' of ' + Q.length + ' answered\n' +
+    Q.map((x, i) => { const r = S.rules[x.id] || {};
+      const st = state(x, r), words = said(r) ? r.say.trim() : '';
+      const a = st === 'yes' ? (words ? 'YES, ON A CONDITION. ' : 'YES. ') + x.yes : st === 'alt1' ? 'NOT YES. Instead, the first alternative: ' + x.alt : st === 'alt2' ? 'NOT YES. Instead, the second alternative: ' + x.alt2
+        : st === 'explain' ? 'EXPLAIN THIS MORE. Come back with more context on a new card.' : st === 'open' ? 'NOT YES, to the question' + (x.alt2 ? ' and to both alternatives' : ' and to the alternative') + '. Left open.' : st === 'more' ? (r.b === 'no' || r.b === 'notyet' ? 'NOT YES, and not the first alternative. No tap yet on the second.' : 'NOT YES. No second tap yet.') : 'Not answered.';
+      return (i + 1) + '. [' + x.id + '] ' + x.t + ': ' + x.q + '\n   ' + a + (words ? '\n   ' + (st === 'yes' ? 'My condition: ' : st === 'explain' ? 'What I want explained: ' : 'In my words: ') + words : ''); }).join('\n');
+}
+function copyAnswers(){
+  const txt = answersText(), out = $('#copyout');
+  const show = msg => { out.innerHTML = '<p class="meta" role="status">' + msg + '</p><textarea class="export" id="copytext" readonly aria-label="Your answers as text">' + esc(txt) + '</textarea>'; };
+  const fallback = () => { show('Your answers are in the box below. Press and hold inside it, choose Select all, then Copy, and paste into the chat.'); const ta = $('#copytext'); ta.focus(); ta.select(); };
+  (navigator.clipboard && navigator.clipboard.writeText ? navigator.clipboard.writeText(txt) : Promise.reject()).then(() => show('Copied. Paste it into the chat.')).catch(fallback);
+}
+
+/* ---------- wiring ---------- */
+document.addEventListener('click', e => {
+  const t = e.target.closest('button'); if (!t) return;
+  if (t.dataset.rule) tap(t.dataset.rule, t.dataset.ans);
+  else if (t.id === 'copybtn') copyAnswers();
+  else if (t.id === 'copywords') copyWords();
+  else if (t.id === 'showmine') showMine();
+  else if (t.id === 'backtoexample') { Q = Array.isArray(C.questions) ? C.questions : []; OWN = false; S.rules = {}; renderAll(); }
+  else if (t.id === 'themebtn') { const r = document.documentElement, dark = r.dataset.theme ? r.dataset.theme === 'dark' : window.matchMedia('(prefers-color-scheme:dark)').matches; r.dataset.theme = dark ? 'light' : 'dark'; if (!COPY) { try { localStorage.setItem(LS + ':theme', r.dataset.theme); } catch(x){} } }
+});
+const sayTimer = {};
+document.addEventListener('input', e => {
+  const id = e.target.dataset && e.target.dataset.say; if (!id) return;
+  S.rules[id] = Object.assign({}, S.rules[id], {say: e.target.value, at: new Date().toISOString()});
+  const pill = document.querySelector('#card-' + CSS.escape(id) + ' .out'), x = Q.find(q => q.id === id); if (pill && x) pill.textContent = outLabel(x, S.rules[id]);   // a Yes becomes a Yes with a condition as soon as words are typed
+  clearTimeout(sayTimer[id]); sayTimer[id] = setTimeout(() => putRule(id), 700);
+});
+
+$('#brand').textContent = C.title || 'The yes not yes';
+$('#strap').textContent = C.strap || '';
+if (C.status) { $('#status').textContent = C.status; $('#status').hidden = false; }
+if (!COPY) { try { const t = localStorage.getItem(LS + ':theme'); if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t; } catch(e){} }
+loadLocal(); renderAll(); connect();
+})();
+</script>
+
+</body></html>

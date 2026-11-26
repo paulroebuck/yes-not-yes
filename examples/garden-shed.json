@@ -1,0 +1,57 @@
+{
+  "mode": "copy",
+  "title": "The yes not yes",
+  "strap": "An example to try",
+  "status": "Prototype",
+  "asker": "your AI",
+  "text": {
+    "heading": "Three made-up decisions",
+    "lede": "This is an example. The three decisions are made up, about a garden shed. Tap Yes or Not yes. Not yes asks “if not yes, then?” and offers another way, with its own Yes and Not yes. Every card has a box for your own words, and a Yes can carry a condition. At the end, press Copy my answers to see the text you would paste into a chat with your AI. To use it on your own decisions, give your AI the words in the box below.",
+    "signature": "— paulroebuck.co.uk · a prototype, seeking pilots"
+  },
+  "questions": [
+    {
+      "id": "shed-colour",
+      "t": "The colour",
+      "about": [
+        "A made-up example. Imagine a garden shed that needs painting before winter.",
+        "It is bare timber now. A tin of green paint is already in the garage, so green costs nothing and can start tomorrow."
+      ],
+      "q": "Do you want the shed painted green?",
+      "yes": "It gets painted green with the tin in the garage.",
+      "alt": "Leave it as bare timber and oil it instead.",
+      "alt2": "Paint it, but a colour you choose from three sample pots first."
+    },
+    {
+      "id": "shed-window",
+      "t": "The window",
+      "about": [
+        "A made-up example. The shed has no window, so it is dark inside.",
+        "A window can go in one of two walls:",
+        [
+          "The south wall. More light, and it faces the house.",
+          "The east wall. Morning light only, and it faces the fence."
+        ],
+        "Cutting the opening is the same work either way."
+      ],
+      "q": "Do you want a window added on the south wall?",
+      "yes": "A window goes in the south wall.",
+      "alt": "Put the window in the east wall, facing the fence.",
+      "alt2": "No window. A skylight in the roof instead."
+    },
+    {
+      "id": "shed-shelves",
+      "t": "The shelves",
+      "about": [
+        "A made-up example. There is room for shelves along the back wall.",
+        "Three shelves would hold the paint tins and the seed trays. They would take about a hand's width off the floor space."
+      ],
+      "q": "Do you want three shelves on the back wall?",
+      "yes": "Three shelves go up on the back wall.",
+      "alt": "No shelves. Hooks on the back wall instead, so the floor stays clear.",
+      "alt2": "One shelf only, high up."
+    }
+  ],
+  "paste": true,
+  "home": "paulroebuck.co.uk/instruments/yes-not-yes"
+}
